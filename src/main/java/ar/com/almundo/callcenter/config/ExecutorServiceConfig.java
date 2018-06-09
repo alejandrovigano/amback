@@ -9,11 +9,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Configuration
 public class ExecutorServiceConfig {
 
-    private int maxConcurrent = 10;
+    //TODO: SE PUEDE SACAR A UNA PROPERTIE CON @VALUE
+    private static final int MAX_CONCURRENT = 10;
 
     @Bean("customExecutorService")
     public ThreadPoolExecutor customExecutorService(){
-        return (ThreadPoolExecutor) Executors.newFixedThreadPool(maxConcurrent);
+        return (ThreadPoolExecutor) Executors.newFixedThreadPool(MAX_CONCURRENT);
     }
 
 }

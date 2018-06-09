@@ -30,7 +30,7 @@ public class CallcenterController {
 
     @GetMapping("/llamada")
     public Page<Llamada> findAll(@PageableDefault(size = 20) Pageable pageable,
-                                 @RequestParam(name = "active", required = false, defaultValue = "true") Boolean active) {
+                                 @RequestParam(name = "activa", required = false, defaultValue = "true") Boolean active) {
         return llamadaService.findAll(active, pageable);
     }
 

@@ -1,6 +1,5 @@
 package ar.com.almundo.callcenter.dispatcher;
 
-import ar.com.almundo.callcenter.dispatcher.impl.AbstractEmpleadoDispatcher;
 import ar.com.almundo.callcenter.dispatcher.impl.LlamadaDispatcherImpl;
 import ar.com.almundo.callcenter.model.Director;
 import ar.com.almundo.callcenter.model.Llamada;
@@ -8,21 +7,16 @@ import ar.com.almundo.callcenter.model.Operador;
 import ar.com.almundo.callcenter.model.Supervisor;
 import ar.com.almundo.callcenter.repository.LlamadaRepository;
 import ar.com.almundo.callcenter.service.EmpleadoService;
-import ar.com.almundo.callcenter.service.LlamadaService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -50,7 +44,7 @@ public class LlamadaDispatcherChainTest {
     @Test
     public void testOperadorLibre() throws ExecutionException, InterruptedException {
 
-        Optional empleado = Optional.of(new Operador("Ale"));
+        Optional<Operador> empleado = Optional.of(new Operador("Ale"));
         when(operadorEmpleadoService.findFreeAndLock()).thenReturn(empleado);
 
         Llamada llamada = new Llamada();
@@ -59,7 +53,7 @@ public class LlamadaDispatcherChainTest {
         Optional<Llamada> response = Optional.ofNullable(llamadaDispatcher.dispatchQueue(llamada).get());
 
         assertTrue(response
-                .map(x -> x.getEmpleado())
+                .map(Llamada::getEmpleado)
                 .filter( x -> x instanceof Operador) //hay operador
                 .isPresent());
     }
@@ -67,7 +61,7 @@ public class LlamadaDispatcherChainTest {
     @Test
     public void testOperadorOcupadoSupervisorLibre() throws ExecutionException, InterruptedException {
 
-        Optional empleado = Optional.of(new Supervisor("Ale"));
+        Optional<Supervisor> empleado = Optional.of(new Supervisor("Ale"));
         when(operadorEmpleadoService.findFreeAndLock()).thenReturn(Optional.empty());
         when(supervisorEmpleadoService.findFreeAndLock()).thenReturn(empleado);
 
@@ -77,7 +71,7 @@ public class LlamadaDispatcherChainTest {
         Optional<Llamada> response = Optional.ofNullable(llamadaDispatcher.dispatchQueue(llamada).get());
 
         assertTrue(response
-                .map(x -> x.getEmpleado())
+                .map(Llamada::getEmpleado)
                 .filter( x -> x instanceof Supervisor) //hay operador
                 .isPresent());
     }
@@ -85,7 +79,7 @@ public class LlamadaDispatcherChainTest {
     @Test
     public void testOperadorOcupadoSupervisorOcupadoDirectorLibre() throws ExecutionException, InterruptedException {
 
-        Optional empleado = Optional.of(new Director("Ale"));
+        Optional<Director> empleado = Optional.of(new Director("Ale"));
         when(operadorEmpleadoService.findFreeAndLock()).thenReturn(Optional.empty());
         when(supervisorEmpleadoService.findFreeAndLock()).thenReturn(Optional.empty());
         when(directorEmpleadoService.findFreeAndLock()).thenReturn(empleado);
@@ -96,7 +90,7 @@ public class LlamadaDispatcherChainTest {
         Optional<Llamada> response = Optional.ofNullable(llamadaDispatcher.dispatchQueue(llamada).get());
 
         assertTrue(response
-                .map(x -> x.getEmpleado())
+                .map(Llamada::getEmpleado)
                 .filter( x -> x instanceof Director) //hay operador
                 .isPresent());
     }
@@ -111,6 +105,6 @@ public class LlamadaDispatcherChainTest {
         Llamada llamada = new Llamada();
         when(llamadaRepository.save(any(Llamada.class))).thenReturn(llamada);
 
-        Llamada response = llamadaDispatcher.dispatchQueue(llamada).get();
+        llamadaDispatcher.dispatchQueue(llamada).get();
     }
 }

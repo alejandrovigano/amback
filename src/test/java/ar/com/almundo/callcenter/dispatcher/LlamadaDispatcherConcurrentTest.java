@@ -1,6 +1,5 @@
 package ar.com.almundo.callcenter.dispatcher;
 
-import ar.com.almundo.callcenter.exception.EmpleadoNoDisponibleException;
 import ar.com.almundo.callcenter.model.*;
 import ar.com.almundo.callcenter.repository.DirectorRepository;
 import ar.com.almundo.callcenter.repository.LlamadaRepository;
@@ -27,10 +26,7 @@ import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.Assert.*;
 
 /**
  * Test aislado de llamada dispatcher, usado en el desarrollo
@@ -39,8 +35,7 @@ import static org.mockito.ArgumentMatchers.any;
 @RunWith(SpringRunner.class)
 public class LlamadaDispatcherConcurrentTest {
 
-    Logger LOGGER = LoggerFactory.getLogger(LlamadaDispatcherConcurrentTest.class);
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(LlamadaDispatcherConcurrentTest.class);
 
     @Autowired
     private LlamadaDispatcher llamadaDispatcher;
@@ -65,6 +60,7 @@ public class LlamadaDispatcherConcurrentTest {
     private ThreadPoolExecutor executorService; //para ver las tareas pendientes
 
 
+    //antes de cada test
     @Before
     public void before(){
         llamadaRepository.deleteAll();
@@ -80,10 +76,10 @@ public class LlamadaDispatcherConcurrentTest {
         Llamada llamada = new Llamada();
 
         Future<Llamada> future = llamadaDispatcher.dispatchQueue(llamada);
-        Optional<Llamada> updatedLlamada = Optional.ofNullable(future.get());
+        Llamada updatedLlamada = future.get();
 
-        assertEquals(updatedLlamada.map(Llamada::getEmpleado).map(Empleado::getNombre).get(),"operador1");
-        assertFalse(updatedLlamada.map(Llamada::getEmpleado).map(Empleado::getOcupado).get());
+        assertEquals(updatedLlamada.getEmpleado().getNombre(),"operador1");
+        assertFalse(updatedLlamada.getEmpleado().getOcupado());
     }
 
 
@@ -91,7 +87,7 @@ public class LlamadaDispatcherConcurrentTest {
     @Test
     public void test2() throws Exception{
         //inserto 2 operadores
-        insertNOperador(2);
+        insertOperador(2);
         //hago dos llamadas
         List<Optional<Llamada>> list = this.llamar(2);
 
@@ -102,26 +98,25 @@ public class LlamadaDispatcherConcurrentTest {
 
     @Test
     public void test10() throws Exception{
-        //inserto 2 operadores
-        insertNOperador(6);
-        insertNSupervisor(3);
-        insertNDirector(1);
+        insertOperador(6);
+        insertSupervisor(3);
+        insertDirector(1);
         this.llamar(10);
     }
 
     @Test
     public void test30() throws Exception{
-        insertNOperador(10);
-        insertNSupervisor(10);
-        insertNDirector(10);
+        insertOperador(10);
+        insertSupervisor(10);
+        insertDirector(10);
         this.llamar(30);
     }
 
     @Test
     public void test11() throws Exception{
-        insertNOperador(7);
-        insertNSupervisor(3);
-        insertNDirector(1);
+        insertOperador(7);
+        insertSupervisor(3);
+        insertDirector(1);
         this.llamar(11);
     }
 
@@ -132,19 +127,15 @@ public class LlamadaDispatcherConcurrentTest {
 
     //-----HELPER METHODS
 
-    private Stream<String> nombreStream(List<Optional<Llamada>> list) {
-        return list.stream().map(Optional::get).map(Llamada::getEmpleado).map(Empleado::getNombre);
-    }
-
-    public <E extends Empleado> void insertNOperador(int n) {
+    public <E extends Empleado> void insertOperador(int n) {
         insertNEmpleado(n,(i) -> operadorRepository.save(new Operador("operador" + i)));
     }
 
-    public <E extends Empleado> void insertNSupervisor(int n) {
+    public <E extends Empleado> void insertSupervisor(int n) {
         insertNEmpleado(n,(i) -> supervisorRepository.save(new Supervisor("supervisor" + i)));
     }
 
-    public <E extends Empleado> void insertNDirector(int n) {
+    public <E extends Empleado> void insertDirector(int n) {
         insertNEmpleado(n,(i) -> directorRepository.save(new Director("operador" + i)));
     }
 
@@ -169,5 +160,9 @@ public class LlamadaDispatcherConcurrentTest {
         //por cada llamada se creó un operador, tienn que existir todos
 
         return llamadas;
+    }
+
+    private Stream<String> nombreStream(List<Optional<Llamada>> list) {
+        return list.stream().map(Optional::get).map(Llamada::getEmpleado).map(Empleado::getNombre);
     }
 }

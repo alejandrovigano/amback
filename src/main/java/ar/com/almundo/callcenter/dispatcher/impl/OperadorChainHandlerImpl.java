@@ -4,6 +4,6 @@ import ar.com.almundo.callcenter.model.Operador;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OperadorDispatcherImpl extends AbstractEmpleadoDispatcher<Operador> {
+public class OperadorChainHandlerImpl extends AbstractEmpleadoChainHandler<Operador> {
 
 }

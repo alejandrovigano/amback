@@ -16,7 +16,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
- * Dispatcher de las llamadas
+ * ChainHandler de las llamadas
  * Manejo de concurrencia a nivel de DB
  */
 @Component
@@ -29,28 +29,28 @@ public class LlamadaDispatcherImpl implements LlamadaDispatcher {
     private ThreadPoolExecutor executorService;
 
     @Autowired
-    private AbstractEmpleadoDispatcher<Operador> operadorDispatcher;
+    private AbstractEmpleadoChainHandler<Operador> operadorHandler;
     @Autowired
-    private AbstractEmpleadoDispatcher<Supervisor> supervisorDispatcher;
+    private AbstractEmpleadoChainHandler<Supervisor> supervisorHandler;
     @Autowired
-    private AbstractEmpleadoDispatcher<Director> directorDispatcher;
+    private AbstractEmpleadoChainHandler<Director> directorHandler;
 
     @Autowired
     private LlamadaService llamadaService;
 
     @PostConstruct
     public void postConstruct() {
-        operadorDispatcher.setNextEmpleadoDispatcher(supervisorDispatcher);
-        supervisorDispatcher.setNextEmpleadoDispatcher(directorDispatcher);
+        operadorHandler.setNextEmpleadoHandler(supervisorHandler);
+        supervisorHandler.setNextEmpleadoHandler(directorHandler);
     }
 
     /**
-     * Se la envio al operadorDispatcher
+     * Se la envio al operadorHandler
      *
      * @return Optional.llamada generada- empty si no se pudo asignar
      */
-    private Llamada dispatch(Llamada llamada) {
-        Optional<? extends Empleado> empleadoOpt = operadorDispatcher.dispatch(llamada);
+    private Llamada dispatchCall(Llamada llamada) {
+        Optional<? extends Empleado> empleadoOpt = operadorHandler.dispatch(llamada);
         //guardo la llamada
         llamadaService.save(llamada);
         LOGGER.info("inicio llamada: " + llamada.getId());
@@ -73,10 +73,10 @@ public class LlamadaDispatcherImpl implements LlamadaDispatcher {
      */
     public Future<Llamada> dispatchQueue(Llamada llamada) {
         Future<Llamada> future = executorService.submit(() -> {
-            LOGGER.info(String.format("Tareas encoladas x: %d", executorService.getQueue().size()));
-            return this.dispatch(llamada);
+            LOGGER.info(String.format("Ejecutando tarea - Encoladas: %d", executorService.getQueue().size()));
+            return this.dispatchCall(llamada);
         });
-        LOGGER.info(String.format("Tareas encoladas: %d", executorService.getQueue().size()));
+        LOGGER.info(String.format("Agregada tarea - Encoladas: %d", executorService.getQueue().size()));
         return future;
     }
 

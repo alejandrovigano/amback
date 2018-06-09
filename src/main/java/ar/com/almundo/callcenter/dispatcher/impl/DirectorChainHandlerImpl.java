@@ -4,6 +4,6 @@ import ar.com.almundo.callcenter.model.Director;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DirectorDispatcherImpl extends AbstractEmpleadoDispatcher<Director> {
+public class DirectorChainHandlerImpl extends AbstractEmpleadoChainHandler<Director> {
 
 }

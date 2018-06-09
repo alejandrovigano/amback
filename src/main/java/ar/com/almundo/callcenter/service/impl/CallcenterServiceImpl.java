@@ -1,7 +1,6 @@
 package ar.com.almundo.callcenter.service.impl;
 
 import ar.com.almundo.callcenter.dispatcher.LlamadaDispatcher;
-import ar.com.almundo.callcenter.dispatcher.impl.AbstractEmpleadoDispatcher;
 import ar.com.almundo.callcenter.exception.EmpleadoNoDisponibleException;
 import ar.com.almundo.callcenter.model.Llamada;
 import ar.com.almundo.callcenter.service.CallcenterService;
@@ -13,13 +12,10 @@ import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.ExecutionException;
-
 @Service
 public class CallcenterServiceImpl implements CallcenterService {
 
-    Logger LOGGER = LoggerFactory.getLogger(CallcenterServiceImpl.class);
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(CallcenterServiceImpl.class);
 
     @Autowired
     private LlamadaDispatcher llamadaDispatcher;

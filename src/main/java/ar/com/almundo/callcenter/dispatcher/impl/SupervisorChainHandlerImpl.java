@@ -4,6 +4,6 @@ import ar.com.almundo.callcenter.model.Supervisor;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SupervisorDispatcherImpl extends AbstractEmpleadoDispatcher<Supervisor> {
+public class SupervisorChainHandlerImpl extends AbstractEmpleadoChainHandler<Supervisor> {
 
 }

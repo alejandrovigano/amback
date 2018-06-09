@@ -1,6 +1,6 @@
 package ar.com.almundo.callcenter.dispatcher.impl;
 
-import ar.com.almundo.callcenter.dispatcher.Dispatcher;
+import ar.com.almundo.callcenter.dispatcher.ChainHandler;
 import ar.com.almundo.callcenter.model.Empleado;
 import ar.com.almundo.callcenter.model.Llamada;
 import ar.com.almundo.callcenter.service.EmpleadoService;
@@ -14,14 +14,14 @@ import java.util.Optional;
  * Dispatch de empleado, adaptado al patron chain of responsability
  * @param <E>
  */
-public abstract class AbstractEmpleadoDispatcher<E extends Empleado> implements Dispatcher<Empleado> {
+public abstract class AbstractEmpleadoChainHandler<E extends Empleado> implements ChainHandler<Empleado> {
 
-    Logger LOGGER = LoggerFactory.getLogger(AbstractEmpleadoDispatcher.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractEmpleadoChainHandler.class);
 
     @Autowired
     private EmpleadoService<E> service;
 
-    private AbstractEmpleadoDispatcher nextEmpleadoDispatcher;
+    private AbstractEmpleadoChainHandler nextEmpleadoHandler;
 
     /**
      * Obtengo el empleado ya reservado, y lo asigno a la llamada
@@ -47,15 +47,15 @@ public abstract class AbstractEmpleadoDispatcher<E extends Empleado> implements 
      */
     protected Optional<? extends Empleado> getWhenNotFound(Llamada llamada) {
         LOGGER.info("No se encuentra empleado con el dispatcher - " + getClass().getSimpleName());
-        return Optional.ofNullable(getNextEmpleadoDispatcher())
+        return Optional.ofNullable(getNextEmpleadoHandler())
                 .flatMap(ed -> ed.dispatch(llamada));
     }
 
-    private AbstractEmpleadoDispatcher getNextEmpleadoDispatcher() {
-        return nextEmpleadoDispatcher;
+    private AbstractEmpleadoChainHandler getNextEmpleadoHandler() {
+        return nextEmpleadoHandler;
     }
 
-    public void setNextEmpleadoDispatcher(AbstractEmpleadoDispatcher nextEmpleadoDispatcher) {
-        this.nextEmpleadoDispatcher = nextEmpleadoDispatcher;
+    public void setNextEmpleadoHandler(AbstractEmpleadoChainHandler nextEmpleadoHandler) {
+        this.nextEmpleadoHandler = nextEmpleadoHandler;
     }
 }

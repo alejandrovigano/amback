@@ -41,8 +41,8 @@ public class LlamadaServiceImpl implements LlamadaService {
     @Override
     public void realizarLlamada(Llamada llamada) {
         try {
-            //FIXME: ACA ESPERA HASTA QUE TERMINE LA LLAMADA?..
-            int seconds = 1+ new Random().nextInt(5);
+            //ACA ESPERA HASTA QUE TERMINE LA LLAMADA.....
+            int seconds = 5+ new Random().nextInt(6);
             Thread.sleep(TimeUnit.SECONDS.toMillis(seconds));
         } catch (InterruptedException e) {
             e.printStackTrace();

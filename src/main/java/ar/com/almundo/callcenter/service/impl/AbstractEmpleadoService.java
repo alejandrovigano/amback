@@ -19,7 +19,7 @@ public abstract class AbstractEmpleadoService<E extends Empleado> implements Emp
      * @return
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Optional<E> findFreeAndLock(){
+    public synchronized Optional<E> findFreeAndLock(){
         Optional<E> empleado = repository.findFirstByOcupadoIsFalseOrderByLastModifiedDateAsc();
         empleado.ifPresent(e -> e.setOcupado(true));
         return empleado;
