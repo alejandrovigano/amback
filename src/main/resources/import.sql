@@ -1,0 +1,13 @@
+INSERT INTO callcenter.empleado (dtype,last_modified_date,nombre,ocupado) VALUES ('Operador',NULL,'Operador1',0);
+INSERT INTO callcenter.empleado (dtype,last_modified_date,nombre,ocupado) VALUES ('Operador',NULL,'Operador2',0);
+INSERT INTO callcenter.empleado (dtype,last_modified_date,nombre,ocupado) VALUES ('Operador',NULL,'Operador3',0);
+INSERT INTO callcenter.empleado (dtype,last_modified_date,nombre,ocupado) VALUES ('Operador',NULL,'Operador4',0);
+INSERT INTO callcenter.empleado (dtype,last_modified_date,nombre,ocupado) VALUES ('Operador',NULL,'Operador5',0);
+INSERT INTO callcenter.empleado (dtype,last_modified_date,nombre,ocupado) VALUES ('Operador',NULL,'Operador6',0);
+INSERT INTO callcenter.empleado (dtype,last_modified_date,nombre,ocupado) VALUES ('Operador',NULL,'Operador7',0);
+INSERT INTO callcenter.empleado (dtype,last_modified_date,nombre,ocupado) VALUES ('Operador',NULL,'Operador8',0);
+INSERT INTO callcenter.empleado (dtype,last_modified_date,nombre,ocupado) VALUES ('Operador',NULL,'Operador9',0);
+INSERT INTO callcenter.empleado (dtype,last_modified_date,nombre,ocupado) VALUES ('Supervisor',NULL,'Supervisor1',0);
+INSERT INTO callcenter.empleado (dtype,last_modified_date,nombre,ocupado) VALUES ('Supervisor',NULL,'Supervisor2',0);
+INSERT INTO callcenter.empleado (dtype,last_modified_date,nombre,ocupado) VALUES ('Supervisor',NULL,'Supervisor3',0);
+INSERT INTO callcenter.empleado (dtype,last_modified_date,nombre,ocupado) VALUES ('Director',NULL,'Director1',0);
