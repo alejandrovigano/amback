@@ -33,7 +33,7 @@ Se usa un lockeo pesimista para obtener atomicidad en la obtencion + actualizaci
 *AbstractEmpleadoService*
 ```java
 @Transactional(propagation = Propagation.REQUIRES_NEW)
-public Optional<E> findFreeAndLock(){
+public synchronized Optional<E> findFreeAndLock(){
     Optional<E> empleado = repository.findFirstByOcupadoIsFalseOrderByLastModifiedDateAsc();
     empleado.ifPresent(e -> e.setOcupado(true));
     return empleado;
